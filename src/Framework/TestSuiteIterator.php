@@ -19,7 +19,7 @@ final class TestSuiteIterator implements RecursiveIterator
     /**
      * @var int
      */
-    private $position;
+    private $position = 0;
 
     /**
      * @var Test[]
@@ -58,7 +58,7 @@ final class TestSuiteIterator implements RecursiveIterator
     /**
      * Returns the current element.
      */
-    public function current(): Test
+    public function current(): ?Test
     {
         return $this->valid() ? $this->tests[$this->position] : null;
     }
@@ -73,12 +73,20 @@ final class TestSuiteIterator implements RecursiveIterator
 
     /**
      * Returns the sub iterator for the current element.
+     *
+     * @throws \BadMethodCallException if the current element is no TestSuite
      */
     public function getChildren(): self
     {
-        return new self(
-            $this->tests[$this->position]
-        );
+        $parent = $this->current();
+        if (!$parent instanceof TestSuite) {
+            throw new \BadMethodCallException(
+                'The current is no TestSuite and hence cannot have any children.',
+                1556377805
+            );
+        }
+
+        return new self($parent);
     }
 
     /**
@@ -86,6 +94,6 @@ final class TestSuiteIterator implements RecursiveIterator
      */
     public function hasChildren(): bool
     {
-        return $this->tests[$this->position] instanceof TestSuite;
+        return $this->current() instanceof TestSuite;
     }
 }

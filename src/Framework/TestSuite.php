@@ -594,6 +594,8 @@ class TestSuite implements Test, SelfDescribing, \IteratorAggregate
 
     /**
      * Returns the tests as an enumeration.
+     *
+     * @return TestCase[]
      */
     public function tests(): array
     {
